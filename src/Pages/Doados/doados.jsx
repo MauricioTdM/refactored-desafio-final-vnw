@@ -1,11 +1,26 @@
 import S from "./doados.module.scss"
 import CardsLivros from "../../Components/CardsLivros/cardsLivros"
 import ImgLivro1 from '../../assets/livroProtagonista.png'
-import ImgLivro2 from '../../assets/livroDataScience.jpg'
-import ImgLivro3 from '../../assets/livroPaiRico.jpg'
+import axios from "axios"
+import { useState, useEffect } from "react"
 
 
 export default function Doados() {
+
+    const [livros, setLivros] = useState([])
+
+    const getLivros = async () => {
+        const response = await axios.get("https://desafio-2-api-livros-vai-na-web-z4jx.onrender.com/livros")
+        // console.log(response);
+        setLivros(response.data)
+        
+    }
+
+    useEffect(() => {
+        getLivros()
+    },[])
+
+
     return(
         <main className={S.main}>
             <section>
@@ -20,22 +35,15 @@ export default function Doados() {
                         author: 'Susanne Andrade',
                         genre: 'Ficção'
                 }}/>
-                <CardsLivros 
-                    bookData={{
-                        image: ImgLivro2,
-                        alter: 'Capa do livro Data Science do Zero',
-                        title: 'Data Science do Zero',
-                        author: 'Joel Grus',
-                        genre: 'Tecnologia'
-                }}/>
-                <CardsLivros 
-                    bookData={{
-                        image: ImgLivro3,
-                        alter: 'Capa do livro Pai Rico, Pai Pobre',
-                        title: 'Pai Rico, Pai Pobre',
-                        author: 'Kiyosaki T Robert',
-                        genre: 'Finanças'
-                }}/>
+                {livros.map((item) => (
+                    <CardsLivros key={item.id}
+                        bookData={{
+                        image: item.imagem_url,
+                        title: item.titulo,
+                        author: item.autor,
+                        genre: item.categoria
+                    }}/>
+                ))}
             </section>
         </main>
     )
